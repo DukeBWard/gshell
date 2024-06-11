@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"gshell/src/cmd"
 	"os"
 	"strings"
 )
@@ -28,6 +29,10 @@ func main() {
 
 		if input == "exit" {
 			exit = true
+		}
+
+		if input == "ls" {
+			cmd.Ls()
 		}
 
 	}
