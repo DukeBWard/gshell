@@ -10,9 +10,10 @@ import (
 
 // Cannot use := at the package level
 
-var COMMANDS = map[string]func(){
+var COMMANDS = map[string]func(args ...string){
 	"ls":  cmd.Ls,
 	"pwd": cmd.Pwd,
+	"cd":  cmd.Cd,
 }
 
 func main() {
@@ -42,7 +43,8 @@ func main() {
 
 		// Silly go formatting, you need else to be on the same line as end bracket of if
 		if exists {
-			command()
+			//fmt.Println(input_slice[1:])
+			command(input_slice[1:]...)
 		} else {
 			cmd.Run_external(input_slice...)
 			//fmt.Println("Command does not exist.")
