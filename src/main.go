@@ -33,6 +33,7 @@ func main() {
 		input = strings.TrimSpace(input)
 
 		command, exists := COMMANDS[input]
+		input_slice := strings.Split(input, " ")
 
 		if input == "exit" {
 			exit = true
@@ -43,7 +44,8 @@ func main() {
 		if exists {
 			command()
 		} else {
-			fmt.Println("Command does not exist.")
+			cmd.Run_external(input_slice...)
+			//fmt.Println("Command does not exist.")
 		}
 
 	}
