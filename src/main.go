@@ -10,6 +10,11 @@ import (
 
 // Cannot use := at the package level
 
+var COMMANDS = map[string]func(){
+	"ls":  cmd.Ls,
+	"pwd": cmd.Pwd,
+}
+
 func main() {
 	exit := false
 	cursor := bufio.NewReadWriter(bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout))
@@ -27,12 +32,18 @@ func main() {
 
 		input = strings.TrimSpace(input)
 
+		command, exists := COMMANDS[input]
+
 		if input == "exit" {
 			exit = true
+			return
 		}
 
-		if input == "ls" {
-			cmd.Ls()
+		// Silly go formatting, you need else to be on the same line as end bracket of if
+		if exists {
+			command()
+		} else {
+			fmt.Println("Command does not exist.")
 		}
 
 	}
