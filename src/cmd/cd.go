@@ -13,12 +13,19 @@ func Cd(dir string, args ...string) (new_dir string) {
 		return dir
 	}
 
-	err := os.Chdir(dir + "\\" + args[0])
-	if err != nil {
-		fmt.Println("Could not change directory: ", err)
+	if args[0] == ".." {
+		err := os.Chdir("..")
+		if err != nil {
+			fmt.Println("Could not change directory: ", err)
+		}
+	} else {
+		err := os.Chdir(dir + "\\" + args[0])
+		if err != nil {
+			fmt.Println("Could not change directory: ", err)
+		}
 	}
 
-	new_dir, err = os.Getwd()
+	new_dir, err := os.Getwd()
 	if err != nil {
 		fmt.Println("Could not change directory: ", err)
 	}
