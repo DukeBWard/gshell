@@ -6,7 +6,7 @@ import (
 )
 
 // Don't forget in Go first letter needs to be capitalized for public
-func Ls(args ...string) {
+func Ls(dir string, args ...string) {
 	entries, err := os.ReadDir(".")
 	if err != nil {
 		fmt.Println("Error reading directory:", err)

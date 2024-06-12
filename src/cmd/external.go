@@ -5,7 +5,7 @@ import (
 	"os/exec"
 )
 
-func Run_external(args ...string) {
+func Run_external(dir string, args ...string) {
 	// fmt.Printf("Running command: %s with args: %v\n", cmd_str, args)
 	cmd := exec.Command("powershell", args...)
 	if val, err := cmd.CombinedOutput(); err != nil {

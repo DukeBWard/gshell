@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func Cd(args ...string) {
+func Cd(dir string, args ...string) {
 	fmt.Println(args)
 
 	if len(args) < 2 {

@@ -6,7 +6,7 @@ import (
 )
 
 // Don't forget in Go first letter needs to be capitalized for public
-func Pwd(args ...string) {
+func Pwd(dir string, args ...string) {
 	pwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println("Could not get pwd: ", err)

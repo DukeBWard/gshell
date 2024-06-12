@@ -10,7 +10,7 @@ import (
 
 // Cannot use := at the package level
 
-var COMMANDS = map[string]func(args ...string){
+var COMMANDS = map[string]func(dir string, args ...string){
 	"ls":  cmd.Ls,
 	"pwd": cmd.Pwd,
 	"cd":  cmd.Cd,
@@ -19,6 +19,10 @@ var COMMANDS = map[string]func(args ...string){
 func main() {
 	exit := false
 	cursor := bufio.NewReadWriter(bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout))
+	curr_directory, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error with startup: ", err)
+	}
 
 	for !exit {
 		cursor.WriteString("gshell> ")
@@ -44,9 +48,9 @@ func main() {
 		// Silly go formatting, you need else to be on the same line as end bracket of if
 		if exists {
 			//fmt.Println(input_slice[1:])
-			command(input_slice[1:]...)
+			command(curr_directory, input_slice[1:]...)
 		} else {
-			cmd.Run_external(input_slice...)
+			cmd.Run_external(curr_directory, input_slice...)
 			//fmt.Println("Command does not exist.")
 		}
 
