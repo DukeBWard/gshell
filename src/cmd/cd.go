@@ -5,28 +5,24 @@ import (
 	"os"
 )
 
-func Cd(dir string, args ...string) {
-	fmt.Println(args)
+func Cd(dir string, args ...string) (new_dir string) {
 
-	if len(args) < 2 {
+	// error checking
+	if len(args) < 1 {
 		fmt.Println("cd usage: cd <directory>")
-		return
+		return dir
 	}
 
-	curr_directory, err := os.Getwd()
+	err := os.Chdir(dir + "\\" + args[0])
 	if err != nil {
 		fmt.Println("Could not change directory: ", err)
 	}
 
-	err = os.Chdir(curr_directory + "/" + args[1])
+	new_dir, err = os.Getwd()
 	if err != nil {
 		fmt.Println("Could not change directory: ", err)
 	}
 
-	curr_directory, err = os.Getwd()
-	if err != nil {
-		fmt.Println("Could not change directory: ", err)
-	}
-	fmt.Println(curr_directory)
-	return
+	fmt.Println(new_dir)
+	return new_dir
 }

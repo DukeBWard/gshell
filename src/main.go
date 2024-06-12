@@ -10,7 +10,7 @@ import (
 
 // Cannot use := at the package level
 
-var COMMANDS = map[string]func(dir string, args ...string){
+var COMMANDS = map[string]func(dir string, args ...string) (new_dir string){
 	"ls":  cmd.Ls,
 	"pwd": cmd.Pwd,
 	"cd":  cmd.Cd,
@@ -36,9 +36,8 @@ func main() {
 		}
 
 		input = strings.TrimSpace(input)
-
-		command, exists := COMMANDS[input]
 		input_slice := strings.Split(input, " ")
+		command, exists := COMMANDS[input_slice[0]]
 
 		if input == "exit" {
 			exit = true
@@ -47,8 +46,7 @@ func main() {
 
 		// Silly go formatting, you need else to be on the same line as end bracket of if
 		if exists {
-			//fmt.Println(input_slice[1:])
-			command(curr_directory, input_slice[1:]...)
+			curr_directory = command(curr_directory, input_slice[1:]...)
 		} else {
 			cmd.Run_external(curr_directory, input_slice...)
 			//fmt.Println("Command does not exist.")

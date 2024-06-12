@@ -2,15 +2,17 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 )
 
 // Don't forget in Go first letter needs to be capitalized for public
-func Pwd(dir string, args ...string) {
-	pwd, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Could not get pwd: ", err)
-	}
+func Pwd(dir string, args ...string) (new_dir string) {
+	// pwd, err := os.Getwd()
+	// if err != nil {
+	// 	fmt.Println("Could not get pwd: ", err)
+	// }
+
+	pwd := dir
 
 	fmt.Println(pwd)
+	return dir
 }
