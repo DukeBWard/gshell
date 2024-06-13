@@ -2,11 +2,9 @@ package main
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"gshell/src/cmd"
 	"os"
-	"os/signal"
 	"strings"
 	"sync"
 )
@@ -28,9 +26,6 @@ func main() {
 		fmt.Println("Error with startup: ", err)
 	}
 
-	// Channel to listen for interrupt signals
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, os.Interrupt)
 	for !exit {
 		cursor.WriteString("gshell> ")
 		// WriteString writes to a buffer so you need to flush it to display it
@@ -50,17 +45,6 @@ func main() {
 			exit = true
 			return
 		}
-
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-
-		go func() {
-			select {
-			case <-signalChan:
-				cancel() // Cancel the context if an interrupt signal is received
-			case <-ctx.Done():
-			}
-		}()
 
 		// Silly go formatting, you need else to be on the same line as end bracket of if
 		// Using go routines here to add multiple commands to me ran at once
