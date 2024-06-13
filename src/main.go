@@ -2,10 +2,13 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"gshell/src/cmd"
 	"os"
+	"os/signal"
 	"strings"
+	"sync"
 )
 
 // Cannot use := at the package level
@@ -17,6 +20,7 @@ var COMMANDS = map[string]func(dir string, args ...string) (new_dir string){
 }
 
 func main() {
+	var wg sync.WaitGroup
 	exit := false
 	cursor := bufio.NewReadWriter(bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout))
 	curr_directory, err := os.Getwd()
@@ -24,6 +28,9 @@ func main() {
 		fmt.Println("Error with startup: ", err)
 	}
 
+	// Channel to listen for interrupt signals
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
 	for !exit {
 		cursor.WriteString("gshell> ")
 		// WriteString writes to a buffer so you need to flush it to display it
@@ -44,13 +51,37 @@ func main() {
 			return
 		}
 
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		go func() {
+			select {
+			case <-signalChan:
+				cancel() // Cancel the context if an interrupt signal is received
+			case <-ctx.Done():
+			}
+		}()
+
 		// Silly go formatting, you need else to be on the same line as end bracket of if
+		// Using go routines here to add multiple commands to me ran at once
+		wg.Add(1)
 		if exists {
-			curr_directory = command(curr_directory, input_slice[1:]...)
+			go func() {
+				curr_directory = command(curr_directory, input_slice[1:]...)
+				defer wg.Done()
+			}()
+		} else if input_slice[0] == "" {
+			continue
 		} else {
-			cmd.Run_external(curr_directory, input_slice...)
-			//fmt.Println("Command does not exist.")
+			go func() {
+				cmd.Run_external(curr_directory, input_slice...)
+				defer wg.Done()
+				//fmt.Println("Command does not exist.")
+			}()
+
 		}
+
+		wg.Wait()
 
 	}
 }
