@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"time"
 )
 
 // Don't forget in Go first letter needs to be capitalized for public
@@ -20,8 +19,6 @@ func Ls(dir string, args ...string) (new_dir string) {
 			maxLength = len(entry.Name())
 		}
 	}
-
-	time.Sleep(2 * time.Second)
 
 	for _, entry := range entries {
 		fmt.Printf("%-*s", maxLength+2, entry.Name())
