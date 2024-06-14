@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"gshell/src/cmd"
 	"os"
+	"os/signal"
 	"strings"
 	"sync"
+	"syscall"
 )
 
 // Cannot use := at the package level
@@ -19,6 +21,9 @@ var COMMANDS = map[string]func(dir string, args ...string) (new_dir string){
 
 func main() {
 	var wg sync.WaitGroup
+	sigChan := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	exit := false
 	cursor := bufio.NewReadWriter(bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout))
 	curr_directory, err := os.Getwd()
@@ -43,6 +48,7 @@ func main() {
 
 		if input == "exit" {
 			exit = true
+			done <- true
 			return
 		}
 
