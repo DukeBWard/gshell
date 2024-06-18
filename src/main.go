@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"gshell/src/cmd"
 	"os"
@@ -20,8 +21,10 @@ var COMMANDS = map[string]func(dir string, args ...string) (new_dir string){
 
 func main() {
 	var wg sync.WaitGroup
+
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT)
+
 	cursor := bufio.NewReadWriter(bufio.NewReader(os.Stdin), bufio.NewWriter(os.Stdout))
 	curr_directory, err := os.Getwd()
 	if err != nil {
@@ -30,6 +33,7 @@ func main() {
 	}
 
 	for {
+		ctx, cancel := context.WithCancel(context.Background())
 		cursor.WriteString("gshell> ")
 		// WriteString writes to a buffer so you need to flush it to display it
 		cursor.Flush()
@@ -59,17 +63,18 @@ func main() {
 			continue
 		} else {
 			go func() {
-				select {
-				case <-sigChan:
-					fmt.Println("\nCommand interrupted")
-					return
-				default:
-					defer wg.Done()
-					cmd.Run_external(curr_directory, input_slice...)
-				}
+				defer wg.Done()
+				cmd.Run_external(ctx, curr_directory, input_slice...)
 			}()
 		}
 
-		wg.Wait()
+		select {
+		case <-sigChan:
+			fmt.Println("\nCommand interrupted")
+			cancel()
+		default:
+			wg.Wait()
+		}
+
 	}
 }
