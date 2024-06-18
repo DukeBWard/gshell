@@ -49,31 +49,27 @@ func main() {
 		}
 
 		wg.Add(1)
-		done := make(chan struct{})
 		if exists {
 			go func() {
 				defer wg.Done()
 				curr_directory = command(curr_directory, input_slice[1:]...)
-				close(done)
 			}()
 		} else if input_slice[0] == "" {
 			wg.Done()
 			continue
 		} else {
 			go func() {
-				defer wg.Done()
-				cmd.Run_external(curr_directory, input_slice...)
-				close(done)
+				select {
+				case <-sigChan:
+					fmt.Println("\nCommand interrupted")
+					return
+				default:
+					defer wg.Done()
+					cmd.Run_external(curr_directory, input_slice...)
+				}
 			}()
-		}
-
-		select {
-		case <-sigChan:
-			fmt.Println("\nCommand interrupted")
-		case <-done:
 		}
 
 		wg.Wait()
 	}
-	fmt.Println("Exiting...")
 }
