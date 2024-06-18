@@ -46,6 +46,8 @@ func main() {
 
 		input = strings.TrimSpace(input)
 		input_slice := strings.Split(input, " ")
+
+		// TODO: Small bug, but if you type "ls hello" it just checks for ls
 		command, exists := COMMANDS[input_slice[0]]
 
 		if input == "exit" {
@@ -64,6 +66,7 @@ func main() {
 		} else {
 			go func() {
 				defer wg.Done()
+				// TODO: Interrupt the print buffer
 				cmd.Run_external(ctx, curr_directory, input_slice...)
 			}()
 		}
