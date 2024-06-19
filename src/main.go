@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"gshell/src/cmd"
+	"gshell/src/history"
 	"os"
 	"os/signal"
 	"strings"
@@ -44,6 +45,7 @@ func main() {
 			return
 		}
 
+		history.Append_history(input)
 		input = strings.TrimSpace(input)
 		input_slice := strings.Split(input, " ")
 
