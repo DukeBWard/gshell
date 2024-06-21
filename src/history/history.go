@@ -1,11 +1,50 @@
 package history
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+
+	"github.com/rivo/tview"
 )
 
 const HIST_NAME = ".gshell_history"
+
+func List_history(dir string, args ...string) (new_dir string) {
+
+	file, err := os.Open(HIST_NAME)
+	if err != nil {
+		fmt.Errorf("Cannot open file: %w", err)
+	}
+
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Errorf("Scanner had an error: %w", err)
+	}
+
+	app := tview.NewApplication()
+	textView := tview.NewTextView().SetDynamicColors(true).SetRegions(true).SetScrollable(true)
+
+	for _, line := range lines {
+		fmt.Fprintln(textView, line)
+	}
+
+	textView.SetChangedFunc(func() {
+		app.Draw()
+	})
+
+	if err := app.SetRoot(textView, true).Run(); err != nil {
+		fmt.Errorf("Error running application: %v", err)
+	}
+
+	return dir
+}
 
 func Append_history(cmd string) error {
 
@@ -32,18 +71,4 @@ func Append_history(cmd string) error {
 	}
 
 	return nil
-
-	// data := []byte(cmd)
-
-	// err := os.WriteFile(HIST_NAME, data, 0777)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// data, err = os.ReadFile(HIST_NAME)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// fmt.Println(string(data))
 }

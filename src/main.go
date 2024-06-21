@@ -15,9 +15,10 @@ import (
 
 // Cannot use := at the package level
 var COMMANDS = map[string]func(dir string, args ...string) (new_dir string){
-	"ls":  cmd.Ls,
-	"pwd": cmd.Pwd,
-	"cd":  cmd.Cd,
+	"ls":      cmd.Ls,
+	"pwd":     cmd.Pwd,
+	"cd":      cmd.Cd,
+	"history": history.List_history,
 }
 
 func main() {
