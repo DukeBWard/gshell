@@ -8,7 +8,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-const HIST_NAME = ".gshell_history"
+var HIST_NAME = os.Getenv("userprofile") + "\\" + ".gshell_history"
 
 func List_history(dir string, args ...string) (new_dir string) {
 
