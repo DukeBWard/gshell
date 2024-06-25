@@ -5,8 +5,11 @@ My attempt at making a shell with Golang
 The goal was to behave like a normal shell program.  I have tried my hardest to support any external applications that you already have installed on your PC while also building some of my own.  
 
 * `pwd`: shows your current working directory
+<img src = "assets/pwd.png">
 * `ls`: lists files in your current directory
+<img src = "assets/ls.png">
 * `cd <directory>`: allows the user to change directory
+<img src = "assets/cd.png">
 * `history`: shows previous command history
 
 * External commands are ran just like how you would expect.  ex: `cat <filename>` works as intended and `git add <files>` etc.
