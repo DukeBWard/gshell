@@ -18,5 +18,3 @@ The goal was to behave like a normal shell program.  I have tried my hardest to 
 * Tackling the `SIGINT` (CTRL + C) issue was a little interesting and I'm still playing around with it.  I would like to be able to interrupt the pritning buffer, but I have since moved on from the small issue.  It generally works as intended.
 
 * TODO: Piping
-
-* TODO: Scrollable history
